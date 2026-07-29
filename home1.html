@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lobster&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Countdown Timer</title>
+   <link rel="stylesheet" href="styles1.css">
+   <link rel="bglscss" href="bgl.scss">
+</head>
+<body>
+  <nav class="navbar">
+  <a href="index1.html" class="Llogo">TEAM CORDERS</a>
+
+  <div class="nav-links">
+    <a href="about.html">ABOUT</a>
+    <a href="index.html">GAME</a>
+    <a href="guidelines.html">GUIDELINES</a>
+    <a href="home.html">BACKGROUND</a>
+  </div>
+</nav>
+  <section>
+  <img src="logo.png" alt="My Logo" class="logo">
+</section>
+
+  <h1 class="vintage-text">TEAM 
+  <span class="animated-word">CORDERS</span></h1>
+  
+  <section>
+     <h2>
+    LAST DAY TO CHECK IN: JULY 30, 2026
+    </h2>
+
+
+    <div class="timer">
+      <div class="box"><div class="number" id="days">00</div><div class="label">DAYS</div></div>
+      <div class="box"><div class="number" id="hours">00</div><div class="label">HOURS</div></div>
+      <div class="box"><div class="number" id="minutes">00</div><div class="label">MINUTES</div></div>
+      <div class="box"><div class="number" id="seconds">00</div><div class="label">SECONDS</div></div>
+    </div>
+  </section>
+
+  <script>
+  
+    const targetDate = new Date(2026, 6, 30, 24, 59, 59);
+
+    function updateTimer() {
+      const remaining = targetDate - new Date();
+
+      if (remaining <= 0) {
+        document.querySelector(".timer").innerHTML = "<h2>REGISTRATION CLOSED</h2>";
+        return;
+      }
+
+      const days = Math.floor(remaining / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((remaining / (1000 * 60 * 60)) % 24);
+      const minutes = Math.floor((remaining / (1000 * 60)) % 60);
+      const seconds = Math.floor((remaining / 1000) % 60);
+
+      document.getElementById("days").textContent = String(days).padStart(2, "0");
+      document.getElementById("hours").textContent = String(hours).padStart(2, "0");
+      document.getElementById("minutes").textContent = String(minutes).padStart(2, "0");
+      document.getElementById("seconds").textContent = String(seconds).padStart(2, "0");
+    }
+
+    updateTimer();
+    setInterval(updateTimer, 1000);
+    // that's one steeep cliff face
+// in episode 3 of jojo's bizarre adventure, there's this really short scene when jojo arrives at london and the city is introduced in a similar way. 
+// This method is pretty common in many animated shows. 
+// I got lazy and stopped making my own art assets and put this together with images found from around the web -_-
+  
+  </script>
+  <section class="department-grid">
+
+  <!-- Left division -->
+  <div class="department-card">
+    <h1>COLLEGE OF ENGINEERING<br>ADOOR</h1>
+
+    <p><strong>Team leader:</strong>Vignesh H</p>
+
+    <hr>
+
+    <h2>VISION</h2>
+    <p>Develop into a premier Institution, creating socially committed and globally competent engineering professionals.</p>
+
+    <h2>MISSION</h2>
+    <ul>
+      <li>To provide quality education and foster research and development in the field of engineering.</li>
+      <li>To encourage innovation and entrepreneurship for the betterment of society.</li>
+      <li>To develop professional and leadership skills and encourage lifelong learning.</li>
+    </ul>
+  </div>
+
+  <!-- Right division -->
+  <div class="department-card">
+    <h1>DEPT OF co</h1>
+
+    <p><strong>members</strong>:Jinson Biju, Sreehari Vijay, </p>
+
+    <hr>
+
+    <h2>VISION</h2>
+    <p>To be a center of excellence for the young mind to innovative computing professionals for the empowerment of the society.</p>
+
+    <h2>MISSION</h2>
+    <ul>
+      <li>To prepare undergraduate students for successful career in computing professions.</li>
+      <li>To impart high quality education in computer science and engineering.</li>
+      <li>To mold undergraduate students into competitive and socially committed engineers.</li>
+    </ul>
+  </div>
+
+</section>
+</body>
+</html>

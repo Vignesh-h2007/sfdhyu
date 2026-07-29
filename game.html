@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Stack Game</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      
+      font-family: Arial, sans-serif;
+      
+    }
+
+    #score {
+      position: fixed;
+      top: 16px;
+      width: 100%;
+      text-align: center;
+      font-size: 20px;
+      font-weight: bold;
+      z-index: 2;
+    }
+
+    #message {
+      position: fixed;
+      bottom: 18px;
+      width: 100%;
+      text-align: center;
+      color: #b8d9ff;
+      z-index: 2;
+    }
+
+    canvas {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+    <a href="index1.html" color="red">← Back to Home</a>
+  <div id="score">Score: 0</div>
+  <div id="message">Click or press SPACE to place the block</div>
+
+  <script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
+
+  <script>
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x050814);
+
+    const camera = new THREE.PerspectiveCamera(
+      45, window.innerWidth / window.innerHeight, 0.1, 100
+    );
+    camera.position.set(8, 10, 13);
+    camera.lookAt(0, 3, 0);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
+
+    scene.add(new THREE.HemisphereLight(0x9ccaff, 0x111111, 2));
+
+    const light = new THREE.DirectionalLight(0xffffff, 2);
+    light.position.set(5, 10, 7);
+    scene.add(light);
+
+    const blocks = [];
+    let movingBlock;
+    let direction = "x";
+    let speed = 0.12;
+    let score = 0;
+    let gameOver = false;
+
+    function createBlock(x, y, z, width, depth, color) {
+      const geometry = new THREE.BoxGeometry(width, 1, depth);
+      const material = new THREE.MeshStandardMaterial({ color });
+      const block = new THREE.Mesh(geometry, material);
+
+      block.position.set(x, y, z);
+      block.userData = { width, depth };
+
+      scene.add(block);
+      return block;
+    }
+
+    // Base block
+    blocks.push(createBlock(0, 0, 0, 4, 4, 0x426cff));
+    addMovingBlock();
+
+    function addMovingBlock() {
+      const last = blocks[blocks.length - 1];
+      const y = blocks.length;
+
+      movingBlock = createBlock(
+        direction === "x" ? -8 : last.position.x,
+        y,
+        direction === "z" ? -8 : last.position.z,
+        last.userData.width,
+        last.userData.depth,
+        0x00d9ff
+      );
+    }
+
+    function placeBlock() {
+      if (gameOver) return;
+
+      const last = blocks[blocks.length - 1];
+
+      const moveSize = direction === "x"
+        ? movingBlock.userData.width
+        : movingBlock.userData.depth;
+
+      const lastSize = direction === "x"
+        ? last.userData.width
+        : last.userData.depth;
+
+      const movePosition = direction === "x"
+        ? movingBlock.position.x
+        : movingBlock.position.z;
+
+      const lastPosition = direction === "x"
+        ? last.position.x
+        : last.position.z;
+
+      const left = Math.max(
+        movePosition - moveSize / 2,
+        lastPosition - lastSize / 2
+      );
+
+      const right = Math.min(
+        movePosition + moveSize / 2,
+        lastPosition + lastSize / 2
+      );
+
+      const overlap = right - left;
+
+      if (overlap <= 0) {
+        gameOver = true;
+        document.getElementById("message").textContent =
+          "Game Over — refresh to play again";
+        return;
+      }
+
+      const newPosition = (left + right) / 2;
+
+      if (direction === "x") {
+        movingBlock.position.x = newPosition;
+        movingBlock.userData.width = overlap;
+        movingBlock.scale.x = overlap / moveSize;
+      } else {
+        movingBlock.position.z = newPosition;
+        movingBlock.userData.depth = overlap;
+        movingBlock.scale.z = overlap / moveSize;
+      }
+
+      blocks.push(movingBlock);
+      score++;
+      document.getElementById("score").textContent = "Score: " + score;
+
+      direction = direction === "x" ? "z" : "x";
+      addMovingBlock();
+    }
+
+    window.addEventListener("click", placeBlock);
+
+    window.addEventListener("keydown", (event) => {
+      if (event.code === "Space") {
+        event.preventDefault();
+        placeBlock();
+      }
+    });
+
+    function animate() {
+      requestAnimationFrame(animate);
+
+      if (!gameOver) {
+        if (direction === "x") {
+          movingBlock.position.x += speed;
+
+          if (movingBlock.position.x > 8 || movingBlock.position.x < -8) {
+            speed *= -1;
+          }
+        } else {
+          movingBlock.position.z += speed;
+
+          if (movingBlock.position.z > 8 || movingBlock.position.z < -8) {
+            speed *= -1;
+          }
+        }
+      }
+
+      renderer.render(scene, camera);
+    }
+
+    animate();
+
+    window.addEventListener("resize", () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+  </script>
+</body>
+</html>
